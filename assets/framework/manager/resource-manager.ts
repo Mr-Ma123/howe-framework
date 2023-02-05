@@ -255,7 +255,7 @@ export default class ResourceManager {
 
 
 
-    //#region ------加载远程数据------
+    //#region ------加载远程数据-直接url-TODO:后续完善----
 
     //#endregion
 

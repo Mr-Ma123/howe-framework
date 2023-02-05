@@ -2,6 +2,9 @@
 /** 游戏配置-按需设置 */
 export default class GameConfig {
 
+    public static Game_Version = '1.0.0';
+    public static FrameWork_Version = '1.0.0';
+
     //开启碰撞系统
     //cc.director.getCollisionManager().enabled = true;
    
@@ -22,8 +25,6 @@ export default class GameConfig {
     public static GoogleSign =  'org/cocos2dx/javascript/GoogleSign';
     /** FB相关路径 */
     public static FaceBookSign = 'org/cocos2dx/javascript/FaceBookSign';
-
-
 
     /* GP登出本地记录的字段*/
     public static isGpLoginOver = 'isGpLoginOver';

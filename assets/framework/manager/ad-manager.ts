@@ -4,7 +4,14 @@ const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class AdManager extends cc.Component {
-
+    private static instance: AdManager;
+    static getInstance(): AdManager {
+        if (!this.instance) {
+            this.instance = new AdManager();
+        }
+        return this.instance;
+    }
+    
     showInsertAd(){
         if (CC_JSB) {
             if (cc.sys.os == cc.sys.OS_ANDROID) {
@@ -30,4 +37,7 @@ export default class AdManager extends cc.Component {
             }
         }
     }
+
+    //回调
+
 }
