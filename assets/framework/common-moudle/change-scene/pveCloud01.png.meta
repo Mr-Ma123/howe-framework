@@ -1,0 +1,36 @@
+{
+  "ver": "2.3.5",
+  "uuid": "1fd0b2a8-bf9a-4c1b-94d8-b127eb37c7b7",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 502,
+  "height": 260,
+  "platformSettings": {},
+  "subMetas": {
+    "pveCloud01": {
+      "ver": "1.0.4",
+      "uuid": "eebaceb2-e4a7-44df-943b-fe5718a54969",
+      "rawTextureUuid": "1fd0b2a8-bf9a-4c1b-94d8-b127eb37c7b7",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 502,
+      "height": 260,
+      "rawWidth": 502,
+      "rawHeight": 260,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
