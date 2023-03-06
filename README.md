@@ -2,7 +2,7 @@ author: Howe.Ma
 
 # HOWE-FRAMEWORK说明
  * 基于Cocos Creator 2.4.3版本
- 3.x的请移步- https://github.com/Mr-Ma123/howe-frameworkd-3.7up
+ * 3.x的请移步- https://github.com/Mr-Ma123/howe-frameworkd-3.7up
  
 ## 基本管理器说明及使用
  1. AdManager 调用播放插屏及激励视频
