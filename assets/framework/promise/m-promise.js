@@ -1,6 +1,7 @@
 /**
  * 可以取消的Promise 
  * 在cocos creator 设置为全局插件
+ * 小游戏平台未测试
  * @author Lei.Zhang
  * @author Howe.Ma
  */

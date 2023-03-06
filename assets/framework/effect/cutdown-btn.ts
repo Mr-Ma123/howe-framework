@@ -8,7 +8,7 @@ export default class CutDownBtn extends cc.Component {
     private _packingTime = 0;
     private _packingTimeMax = 3;
     @property(cc.Node)
-    imgNode: cc.Node = null; //一般是进度条的图片-加个blockinput组件就好
+    imgNode: cc.Node = null; //节点上进度条的图片-加个blockinput组件就好
     @property(cc.Node)
     barValueNode: cc.Node = null; //要遮挡的节点
 

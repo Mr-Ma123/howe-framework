@@ -42,6 +42,11 @@ export enum UiEffects {
   DEFAULT_STATUS = 0,
 }
 
+/** 预留预制体路径 */
+export class PopResPath {
+  //这里写具体的预制体路径
+}
+
 
 const { ccclass, property } = cc._decorator;
 
@@ -72,19 +77,36 @@ export default class PopManager {
    * 生成预制体
    * @param refComponent 引用的组件
    * @param path 路径
+   * @param path 是否是bundle，如果是bundle后面的参数必须传
+   * @param bundleName  如果是bundle后面的参数必须传
    * @returns 异步node
    */
-  async InsPerfabByRes(refComponent: cc.Component, path: string): MPromise<cc.Node> {
+  async InsPerfabByRes(refComponent: cc.Component, path: string, isBundle?: boolean, bundleName?: string): MPromise<cc.Node> {
     return new Promise((resolve, reject) => {
-      ResourceManager.getInstance().LoadResPerfab(path).then((res) => {
-        if (res) {
-          if (refComponent) { ResourcesReferenceManager.addRefByAssets(refComponent, res) };
-          resolve(cc.instantiate(res));
-        }
-        else {
-          reject(null);
-        }
-      })
+      if (isBundle) {
+        //加载bundle文件= 在加载bundle文件下资源
+        ResourceManager.getInstance().LoadBundleAssets<cc.Prefab>(bundleName, path, cc.Prefab).then((res) => {
+          if (res) {
+            if (refComponent) { ResourcesReferenceManager.addRefByAssets(refComponent, res) };
+            resolve(cc.instantiate(res));
+          }
+          else {
+            reject(null);
+          }
+        })
+
+      } else {
+        ResourceManager.getInstance().LoadResPerfab(path).then((res) => {
+          if (res) {
+            if (refComponent) { ResourcesReferenceManager.addRefByAssets(refComponent, res) };
+            resolve(cc.instantiate(res));
+          }
+          else {
+            reject(null);
+          }
+        })
+
+      }
     });
   }
 
@@ -95,7 +117,7 @@ export default class PopManager {
    * @param priority 优先级默认10 升序出 eg：0最先出
    * @returns 
    */
-  async ShowPop(refComponent: cc.Component, popName: string, priority: number = 10): MPromise<cc.Node> {
+  async ShowPop(refComponent: cc.Component, popName: string, priority: number = 10, isBundle?: { isBundle: boolean, BundleName: string }): MPromise<cc.Node> {
     //打开uiMask
     //A.一级弹窗
     //B.多级弹窗--通过优先级处理 越低的越先出
@@ -106,7 +128,11 @@ export default class PopManager {
       let tNode: cc.Node = null;
       //空栈or栈顶不是要显示的
       if (this._stackName.sizePrioprity() == 0 || this._stackComponent.sizePrioprity() == 0) {
-        tNode = await this.InsPerfabByRes(refComponent, popName);
+        if (isBundle) {
+          tNode = await this.InsPerfabByRes(refComponent, popName, isBundle.isBundle, isBundle.BundleName);
+        } else {
+          tNode = await this.InsPerfabByRes(refComponent, popName);
+        }
         if (!tNode) { reject(null); this.closeShade(); return; }
         tNode.scale = 0.5;
         tNode.active = true;
@@ -128,7 +154,11 @@ export default class PopManager {
         //this._stackComponent.peekPrioprity().active = false;
 
         //上面的应该是不会走的，因为在弹窗关闭的时候 都会弹栈。除非是用那个不清除栈的stack。根据具体需求进行修改即可。
-        tNode = await this.InsPerfabByRes(refComponent, popName);
+        if (isBundle) {
+          tNode = await this.InsPerfabByRes(refComponent, popName, isBundle.isBundle, isBundle.BundleName);
+        } else {
+          tNode = await this.InsPerfabByRes(refComponent, popName);
+        }
         if (!tNode) { reject(null); this.closeShade(); return; }
         tNode.scale = 0.5;
         tNode.active = true;
