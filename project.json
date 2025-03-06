@@ -1,7 +1,7 @@
 {
   "engine": "cocos2d-html5",
   "packages": "packages",
-  "version": "2.4.3",
+  "version": "2.4.10",
   "name": "howe-framework",
   "id": "4c7036ff-1eee-40db-a994-a650e3669b1a",
   "isNew": false

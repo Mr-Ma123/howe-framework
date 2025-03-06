@@ -172,7 +172,7 @@ export enum Event_Name {
     /* GP登录回调数据 */
     GPLoginCallBack = 'GPLoginCallBack',
     /* GP登录回调是否显示按钮 */
-    GPLoginCallBack_showBtn='GPLoginCallBack_showBtn',
+    GPLoginCallBack_showBtn = 'GPLoginCallBack_showBtn',
 
 }
 
@@ -185,9 +185,11 @@ export enum Event_Name {
 export default class EventManager {
     private static instance: EventManager;
     private eventMap: Map<Event_Name | string, MyEventListeners>;
+    private eventWaitMap: Map<Event_Name | string, MyEventListeners>;
 
     private constructor() {
         this.eventMap = new Map();
+        this.eventWaitMap = new Map();
     }
 
     static getInstance(): EventManager {
@@ -236,6 +238,32 @@ export default class EventManager {
         listeners.isInvoking = false;
         listeners.purgeCanceled();
     }
+    /**
+     * 允许事件先发射后监听，监听时直接触发事件，todo 加入发射时的参数
+     */
+    fireWaitAddEvent(event: Event_Name | string) {
+        if (!this.eventMap.get(event) || this.eventMap.get(event).isEmpty()) {
+            let listener;
+            if (!this.eventWaitMap.get(event)) {
+                listener = new MyEventListeners();
+                this.eventWaitMap.set(event, listener);
+            }
+            // 修复快速切换rua猫场景出现的崩溃问题
+            if (this.eventWaitMap.get(event) && listener != null) {
+                this.eventWaitMap.get(event).add(listener.handler, listener.target);
+            }
+        } else {
+            let listener;
+            if (!this.eventWaitMap.get(event)) {
+                listener = new MyEventListeners();
+                this.eventWaitMap.set(event, listener);
+            }
+            // 修复快速切换rua猫场景出现的崩溃问题
+            if (this.eventWaitMap.get(event) && listener != null) {
+                this.eventWaitMap.get(event).add(listener.handler, listener.target);
+            }
+        }
+    }
 
     has(event: Event_Name | string, handler: MyEventHandler = null, target: any = null) {
         let listeners = this.eventMap.get(event);
@@ -264,6 +292,31 @@ export default class EventManager {
             this.eventMap.set(event, listeners);
         }
         listeners.add(handler, target);
+        // 等待监听事件map中有该事件，说明之前发射过了，可以直接触发了。触发结束后直接删除（一次性）。
+        if (this.eventWaitMap.get(event)) {
+            this.eventWaitMap.get(event).handlers.push(handler);
+            let handlers = this.eventWaitMap.get(event).handlers;
+            for (let i = handlers.length; i > 0; i--) {
+                const handler = handlers[i];
+                if (!handler) continue;
+                //如果target是cc.Component,则在节点有效时才调用
+                if (target && (<cc.Component>target).node) { //这种写法就是 target.node
+                    const node = (target as cc.Component).node;
+                    if (cc.isValid(node)) {
+                        handler.call(target);
+                        this.eventWaitMap.delete(event);
+                    }
+                    else {
+                        listeners.cancelByTarget(target);
+                    }
+                }
+                else {
+                    this.eventWaitMap.delete(event);
+                    handler.call(target); //监听未绑定的使用用这个
+                }
+            }
+        }
+
     }
 
     remove(event: Event_Name | string, handler: MyEventHandler, target: any = null) {

@@ -1,6 +1,7 @@
 {
-  "ver": "2.3.5",
+  "ver": "2.3.7",
   "uuid": "d0da60ab-df70-4a4b-a298-65348308eee3",
+  "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -12,8 +13,9 @@
   "platformSettings": {},
   "subMetas": {
     "pveCloud02": {
-      "ver": "1.0.4",
+      "ver": "1.0.6",
       "uuid": "fca1c265-8e12-4751-b6a0-baf39c2cd8e8",
+      "importer": "sprite-frame",
       "rawTextureUuid": "d0da60ab-df70-4a4b-a298-65348308eee3",
       "trimType": "auto",
       "trimThreshold": 1,

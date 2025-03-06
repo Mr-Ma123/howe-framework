@@ -76,7 +76,7 @@ export class FigureUtils {
     //Tips：下面的深拷贝都是可以用的，
 
     /** 二维数组的深拷贝 */
-    static deepcopyArr (arr){
+    static deepcopyArr(arr) {
         var outarr = [], len = arr.length;
         for (var i = 0; i < len; i++) {
             outarr[i] = new Array();
@@ -246,11 +246,11 @@ export class FigureUtils {
 
     /**
      * 根据权重,计算随机内容
-     * @param {arrany} weightArr 
-     * @param {number} totalWeight 权重
+     * @param {arrany} weightArr 权重元素值 eg [ 2,3,5]
+     * @param {number} totalWeight 权重 10
      * @returns 
      */
-    public static getWeightRandIndex(weightArr: [], totalWeight: number) {
+    public static getWeightRandIndex(weightArr: any[], totalWeight: number) {
         let randWeight: number = Math.floor(Math.random() * totalWeight);
         let sum: number = 0;
         for (var weightIndex: number = 0; weightIndex < weightArr.length; weightIndex++) {
@@ -503,10 +503,24 @@ export class FigureUtils {
         return (Array(2).join(0) + time).slice(-2);
     }
 
+    /** 服务器发来的时间戳处理为Date格式
+  * 时间为标志格式的处理 2022-03-31 17:30:25 ->  新的Date */
+    //    public static TimeDispoal(timeS: string) {
+    //     let St: Date = new Date(Date.parse(timeS.replace(/-/g, "/")));
+    //     // St.getTime();//毫秒
+    // //     return St;
+
+    //         // console.log(new Date('1681980605642'));
+    //         let timestamp = 1681980593; // 秒级时间戳
+    //         let date = new Date(timestamp * 1000); // 将秒级时间戳转换为毫秒级时间戳，并使用它创建一个新的Date对象
+    //         //console.log(date); // 输出结果为：Sun Oct 05 2021 18:59:00 GMT+0800 (中国标准时间)
+
+    // }
+
     /**
      * 根据格式返回时间
      * @param date  时间
-     * @param fmt 格式
+     * @param fmt 格式  'yyyy-MM-dd hh:mm:ss '
      * @returns 
      */
     public static formatDate(date: Date, fmt: string) {
@@ -936,5 +950,206 @@ export class FigureUtils {
             return false;
         }
     }
+
+    /**
+     * 传入一个字符串 '123125'
+     * 返回一个字符串 '12.31w'
+     */
+    public static processingString(str: string): string {
+        let convertedString = parseInt(str);
+        if (!Number.isNaN(convertedString)) {
+            if (str.length < 5) {
+                return str;
+            } else {
+                let processedNumber = (convertedString / 10000).toFixed(2)
+                return processedNumber + 'w';
+            }
+        }
+        return str;
+    }
+
+    /**
+     * 传入秒 "4325123"
+     * 返回以下数据格式: "xx小时xx分" / "xx分"
+     */
+    public static secondsConverted(seconds) {
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor((seconds % 3600) / 60);
+
+        var hoursString = hours < 10 ? hours.toString() : hours.toString().padStart(2, '0');
+        var minutesString = minutes < 10 ? minutes.toString() : minutes.toString().padStart(2, '0');
+
+        if (hoursString == '0') {
+            if (minutesString == '0') {
+                return seconds + '秒';
+            }
+            return minutesString + '分钟';
+        }
+
+        return hoursString + '小时' + minutesString + '分钟';
+    }
+
+    /**
+     * 合并去重数组 
+     * @param arr1 
+     * @param arr2 
+     * let arr1 = [1, 2, 3];
+     * let arr2 = [3, 4, 5];
+     * 返回 12345
+     * @returns 
+     */
+    public static combineAndDeduplicate(arr1, arr2) {
+        // return  this.test(arr1,arr2);
+        // return;
+        let combinedArray = arr1.concat(arr2);
+
+        // 去重逻辑
+        let uniqueArray = [];
+        for (let i = 0; i < combinedArray.length; i++) {
+            if (uniqueArray.indexOf(combinedArray[i]) === -1) {
+                uniqueArray.push(combinedArray[i]);
+            }
+        }
+        uniqueArray = this.deduplicateObjects(uniqueArray)
+        return uniqueArray;
+    }
+
+    // 删除处理对象
+    static deduplicateObjects(arr) {
+        // 使用一个 Map 来存储唯一的 id 值对应的对象
+        const idMap = new Map();
+
+        // 遍历数组中的每个对象
+        arr.forEach(obj => {
+            // 以 id 为键检查是否已经存在于 Map 中
+            if (!idMap.has(obj.cid)) {
+                // 如果不存在，则将当前对象添加到 Map 中
+                idMap.set(obj.cid, obj);
+            }
+            // 如果已经存在，则可以根据具体需求进行处理，比如更新对象的其他属性
+            else {
+                // 这里仅仅是个例子，你可以根据需要进行其他操作
+                idMap.get(obj.cid).info = obj.info;
+            }
+        });
+
+        // 将 Map 中的值转换为数组，得到去重后的结果
+        const deduplicatedArray = Array.from(idMap.values());
+
+        return deduplicatedArray;
+    }
+
+    /** 返回字符串里第一个数字 */
+    public static extractFirstNumber(str: string): number | null {
+        // 使用正则表达式提取第一个数字
+        const match = str.match(/\d+/);
+        if (match) {
+            return parseInt(match[0], 10);
+        } else {
+            return null; // 如果没有找到数字，则返回 null
+        }
+    }
+
+
+    static test(a, b) {
+
+        //         const a = {"3001001":0,"3001002":0,"3001003":0,"3003010":0,"3003011":0,"3003012":0,"3003013":0,"3003014":0,"3003015":0,"3003016":0,"3003017":0,"3003018":0,"3003019":0,"3003021":0};
+
+        // const b = [{"id":"10000","cid":3003021},{"id":"10003","cid":3001001},{"id":"10004","cid":3001003},{"id":"10004","cid":3001002},{"id":"10001","cid":3003009},{"id":"10005","cid":3003010},{"id":"10000","cid":3003013},{"id":"10005","cid":3003014},{"id":"10000","cid":3003011},{"id":"10000","cid":3003012},{"id":"10000","cid":3003017},{"id":"10000","cid":3003018},{"id":"10000","cid":3003015},{"id":"10003","cid":3003016},{"id":"10003","cid":3003019}];
+
+        // 将数组 b 转换为以 id 为键的对象
+        const bObject = {};
+        b.forEach(item => {
+            bObject[item.id] = item;
+        });
+
+        // 合并两个对象数组，根据 a 数组为准，如果 b 中存在相同 id，则以 a 为准
+        const mergedArray = Object.entries(a).map(([id, value]) => ({
+            id,
+            cid: bObject[id] ? bObject[id].cid : undefined,
+            value,
+        }));
+
+        console.log(mergedArray);
+        return mergedArray;
+    }
+
+    // 深拷贝 -- 支持map
+    static cloneDeep(obj: any, map = new WeakMap()): any {
+        if (typeof obj !== 'object' || !obj) return obj
+        // 避免循环引用
+        const objFromMap = map.get(obj)
+        if (objFromMap) return objFromMap
+        let target: any = {}
+        map.set(obj, target)
+      
+        // Map
+        if (obj instanceof Map) {
+          target = new Map()
+          obj.forEach((v, k) => {
+            const v1 = this.cloneDeep(v, map)
+            const k1 = this.cloneDeep(k, map)
+            target.set(k1, v1)
+          })
+        }
+      
+        // Set
+        if (obj instanceof Set) {
+          target = new Set()
+          obj.forEach(v => {
+            const v1 = this.cloneDeep(v, map)
+            target.add(v1)
+          })
+        }
+      
+        // Array
+        if (obj instanceof Array) {
+          target = obj.map(item => this.cloneDeep(item, map))
+        }
+      
+        // Object
+        for (const key in obj) {
+          const val = obj[key]
+          target[key] = this.cloneDeep(val, map)
+        }
+        return target
+      }
+      
+      
+    /**
+     * 获取节点的 RenderTexture
+     * @param node 节点
+     * @param out 输出
+     * @see RenderUtil.ts https://gitee.com/ifaswind/eazax-ccc/blob/master/utils/RenderUtil.ts
+     */
+    static getRenderTexture(node: cc.Node, out?: cc.RenderTexture) {
+        // 检查参数
+        if (!cc.isValid(node)) {
+            return null;
+        }
+        if (!out || !(out instanceof cc.RenderTexture)) {
+            out = new cc.RenderTexture();
+        }
+        // 获取宽高
+        const width = Math.floor(node.width),
+            height = Math.floor(node.height);
+        // 初始化 RenderTexture
+        out.initWithSize(width, height);
+        // 创建临时摄像机用于渲染目标节点
+        const cameraNode = new cc.Node();
+        cameraNode.parent = node;
+        const camera = cameraNode.addComponent(cc.Camera);
+        camera.clearFlags |= cc.Camera.ClearFlags.COLOR;
+        camera.backgroundColor = cc.color(0, 0, 0, 0);
+        camera.zoomRatio = cc.winSize.height / height;
+        // 将节点渲染到 RenderTexture 中
+        camera.targetTexture = out;
+        camera.render(node);
+        // 销毁临时对象
+        cameraNode.destroy();
+        // 返回 RenderTexture
+        return out;
+    }
+
 
 }
